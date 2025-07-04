@@ -8,9 +8,41 @@ import Cart from "./cart";
 export default function Shoes() {
   const [listProduct, setListProduct] = useState(data);
   const [productDetail, setProductDetail] = useState(null);
+  const [carts, setCarts] = useState([]);
 
   const handleGetProduct = (dataDetail) => {
     setProductDetail(dataDetail);
+  };
+
+  const handleAddCart = (dataCart) => {
+    const newCarts = [...carts];
+    // Check if the product exists
+    const index = newCarts.findIndex((item) => item.id === dataCart.id);
+    if (index === -1) {
+      setCarts([...newCarts, { ...dataCart, quantity: 1 }]);
+      return;
+    }
+
+    // update quality
+    newCarts[index].quantity += 1;
+    setCarts(newCarts);
+  };
+
+  const handleQuantity = (id, quantity) => {
+    setCarts(
+      carts.map((item) => {
+        if (item.id !== id) return item;
+        return {
+          ...item,
+          quantity: item.quantity + quantity,
+        };
+      })
+    );
+  };
+
+  const handleDelete = (id) => {
+    const newCarts = carts.filter((item) => item.id !== id);
+    setCarts(newCarts);
   };
 
   return (
@@ -25,7 +57,11 @@ export default function Shoes() {
       >
         Cart
       </button>
-      <Cart />
+      <Cart
+        data={carts}
+        handleQuantity={handleQuantity}
+        handleDelete={handleDelete}
+      />
       <ProductList>
         {listProduct.map((item) => {
           return (
@@ -33,6 +69,7 @@ export default function Shoes() {
               key={item.id}
               data={item}
               handleGetProduct={handleGetProduct}
+              handleAddCart={handleAddCart}
             />
           );
         })}
