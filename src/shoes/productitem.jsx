@@ -1,11 +1,16 @@
-export default function ProductItem({ data, handleGetProduct, handleAddCart }) {
+import { useDispatch } from "react-redux";
+import { setProductDetail , addToCart } from "../store/shoesReducer";
+
+export default function ProductItem({ data }) {
+  const dispatch = useDispatch();
+
   return (
     <div className=" max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
       <a
         href="#"
         id="detail"
         className="block hover:bg-gray-200"
-        onClick={() => handleGetProduct(data)}
+        onClick={() => dispatch(setProductDetail(data))}
         data-modal-target="detail-modal"
         data-modal-toggle="detail-modal"
       >
@@ -78,7 +83,7 @@ export default function ProductItem({ data, handleGetProduct, handleAddCart }) {
           </span>
           <button
             className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center cursor-pointer"
-            onClick={() => handleAddCart(data)}
+            onClick={() => dispatch(addToCart(data))}
           >
             Add to cart
           </button>

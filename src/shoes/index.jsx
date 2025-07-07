@@ -1,54 +1,18 @@
 import { useState } from "react";
-import data from "./data.json";
+// import data from "./data.json";
 import ProductItem from "./productitem";
 import ProductList from "./productlist";
 import Modal from "./modal";
 import Cart from "./cart";
+import { useSelector } from "react-redux";
 
 export default function Shoes() {
-  const [listProduct, setListProduct] = useState(data);
-  const [productDetail, setProductDetail] = useState(null);
-  const [carts, setCarts] = useState([]);
-
-  const handleGetProduct = (dataDetail) => {
-    setProductDetail(dataDetail);
-  };
-
-  const handleAddCart = (dataCart) => {
-    const newCarts = [...carts];
-    // Check if the product exists
-    const index = newCarts.findIndex((item) => item.id === dataCart.id);
-    if (index === -1) {
-      setCarts([...newCarts, { ...dataCart, quantity: 1 }]);
-      return;
-    }
-
-    // update quality
-    newCarts[index].quantity += 1;
-    setCarts(newCarts);
-  };
-
-  const handleQuantity = (id, quantity) => {
-    setCarts(
-      carts.map((item) => {
-        if (item.id !== id) return item;
-        return {
-          ...item,
-          quantity: item.quantity + quantity,
-        };
-      })
-    );
-  };
-
-  const handleDelete = (id) => {
-    const newCarts = carts.filter((item) => item.id !== id);
-    setCarts(newCarts);
-  };
+  const listProduct = useSelector((state) => state.shoes.listProduct);
 
   return (
     <div className="max-w-[1200px] mx-auto py-6">
       <h1 className="text-4xl font-bold text-center mb-5">Shoes</h1>
-      <Modal data={productDetail} />
+      <Modal />
       <button
         data-modal-target="cart-modal"
         data-modal-toggle="cart-modal"
@@ -57,19 +21,13 @@ export default function Shoes() {
       >
         Cart
       </button>
-      <Cart
-        data={carts}
-        handleQuantity={handleQuantity}
-        handleDelete={handleDelete}
-      />
+      <Cart />
       <ProductList>
         {listProduct.map((item) => {
           return (
             <ProductItem
               key={item.id}
               data={item}
-              handleGetProduct={handleGetProduct}
-              handleAddCart={handleAddCart}
             />
           );
         })}
