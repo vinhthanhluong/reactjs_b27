@@ -1,4 +1,10 @@
-export default function Cart({ data, handleQuantity, handleDelete }) {
+import { useDispatch, useSelector } from "react-redux";
+import { cartQuantity , cartDelete } from "../store/shoesReducer";
+
+export default function Cart() {
+  const dispatch = useDispatch();
+  const data = useSelector((state) => state.shoes.carts);
+
   return (
     <div
       id="cart-modal"
@@ -44,7 +50,7 @@ export default function Cart({ data, handleQuantity, handleDelete }) {
                   <button
                     type="button"
                     className="cursor-pointer absolute top-[10px] right-[10px] text-red-400 bg-transparent hover:text-red-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
-                    onClick={() => handleDelete(item.id)}
+                    onClick={() => dispatch(cartDelete(item.id))}
                   >
                     <svg
                       className="w-3 h-3"
@@ -78,14 +84,18 @@ export default function Cart({ data, handleQuantity, handleDelete }) {
                       <button
                         disabled={item.quantity === 1}
                         className="w-[30px] h-[30px] flex items-center justify-center pb-1 border border-black text-black rounded-md cursor-pointer disabled:bg-gray-200"
-                        onClick={() => handleQuantity(item.id, -1)}
+                        onClick={() =>
+                          dispatch(cartQuantity({ id: item.id, num: -1 }))
+                        }
                       >
                         -
                       </button>
                       <span className="mx-2">{item.quantity}</span>
                       <button
                         className="w-[30px] h-[30px] flex items-center justify-center pb-1  border border-black text-black rounded-md cursor-pointer"
-                        onClick={() => handleQuantity(item.id, 1)}
+                        onClick={() =>
+                          dispatch(cartQuantity({ id: item.id, num: 1 }))
+                        }
                       >
                         +
                       </button>
@@ -99,7 +109,7 @@ export default function Cart({ data, handleQuantity, handleDelete }) {
             <p className="text-3xl font-bold">Total</p>
             <p className="text-xl font-medium">
               {data.reduce((total, item) => {
-                return total + (item.price * item.quantity);
+                return total + item.price * item.quantity;
               }, 0)}
               $
             </p>
